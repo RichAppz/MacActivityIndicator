@@ -72,8 +72,15 @@ class MacActivityIndicator: NSView {
 
     init(image: NSImage? = nil) {
         super.init(frame: .zero)
+        animationLayer.contentsGravity = kCAGravityResizeAspect
+        animationLayer.contents = image
+        animationLayer.masksToBounds = true
+
+        wantsLayer = true
+        layer?.addSublayer(animationLayer)
 
         addRotation(forLayer: animationLayer)
+        pause(animationLayer)
         isHidden = true
     }
 
@@ -83,15 +90,7 @@ class MacActivityIndicator: NSView {
 
     override func viewWillDraw() {
         super.viewWillDraw()
-        animationLayer.contentsGravity = kCAGravityResizeAspect
         animationLayer.frame = CGRect(x: 0.0, y: 0.0, width: frame.size.width, height: frame.size.height)
-        animationLayer.contents = image
-        animationLayer.masksToBounds = true
-
-        wantsLayer = true
-        layer?.addSublayer(animationLayer)
-
-        addRotation(forLayer: animationLayer)
     }
 
     //================================================================================
@@ -128,13 +127,13 @@ class MacActivityIndicator: NSView {
         isAnimating = true
     }
 
-    func startAnimating () {
+    public func startAnimating () {
         if isAnimating { return }
         if hidesWhenStopped { isHidden = false }
         resume(animationLayer)
     }
-
-    func stopAnimating () {
+    
+    public func stopAnimating () {
         if hidesWhenStopped { isHidden = true }
         pause(animationLayer)
     }
